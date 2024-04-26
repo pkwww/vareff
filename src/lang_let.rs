@@ -15,7 +15,7 @@ pub struct EvalLet;
 
 impl EvalLet {
     fn ans(val: Dom) -> <EvalLet as lang_int::LangInt> :: Repr {
-        Box::new(move |env| val)
+        Box::new(move |_env| val)
     }
 
     fn lift2(bin_op: fn(Dom, Dom) -> Dom, 
