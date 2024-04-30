@@ -1,5 +1,6 @@
 use crate::lang_int::{EvalInt, LangInt};
 use crate::lang_let::{EvalLet, LangLet};
+use crate::lang_eff::{VarEff, EvalEff};
 
 mod lang_int;
 mod lang_let;
