@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::lang_int::{self, EvalInt};
 
-type Name = String;
+type Name = &'static str;
 pub trait LangLet: lang_int::LangInt {
     fn var(var_name: Name) -> Self::Repr;
     fn let_(var: (Name, Self::Repr), body: Self::Repr) -> Self::Repr;
@@ -58,7 +58,7 @@ impl LangLet for EvalLet {
         Box::new(move |env| {
             let var_eval_val = var.1(env);
             // TODO: how to handle var shadowing?
-            env.insert(var.0.clone(), var_eval_val).unwrap();
+            env.insert(var.0, var_eval_val).unwrap();
             body(env)
         })
     }

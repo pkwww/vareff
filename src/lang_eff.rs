@@ -1,11 +1,11 @@
 use crate::{lang_int::{self, EvalInt, LangInt}, lang_let::LangLet};
 
-type Name = String;
-type Cont<T> = Box<dyn Fn(T) -> Reader<T>>;
+type Name = &'static str;
+type Cont<T> = Box<dyn FnOnce(T) -> Reader<T>>;
 
 pub enum Reader<T: Copy> {
     Ans(T),
-    Query(Name, Box<dyn FnOnce(T) -> Reader<T>>),
+    Query(Name, Cont<T>),
     // Query(Name, Fn(T) -> Reader<T>),
 }
 
@@ -29,7 +29,7 @@ impl VarEff {
             },
         }
     }
-    fn lift<T: 'static + Copy>(k1: Box<dyn FnOnce(T) -> Reader<T>>, r: Reader<T>) -> Reader<T> {
+    fn lift<T: 'static + Copy>(k1: Cont<T>, r: Reader<T>) -> Reader<T> {
         match r {
             Reader::Ans(v) => k1(v),
             Reader::Query(n, k2) => Reader::Query(n, Box::new(move |v| VarEff::lift(k1, k2(v)))),
@@ -92,6 +92,6 @@ impl LangLet for EvalEff {
     fn let_(var: (Name, Self::Repr), body: Self::Repr) -> Self::Repr {
         let name = var.0;
         let val = var.1;
-        VarEff::lift(Box::new(move |v| VarEff::letv(name.clone(), v, body)), val)
+        VarEff::lift(Box::new(move |v| VarEff::letv(name, v, body)), val)
     }
 }
