@@ -1,4 +1,5 @@
-use crate::{lang_int::{self, EvalInt, LangInt}, lang_let::LangLet};
+use crate::eval_int::{self, EvalInt};
+use crate::lang::{LangInt, LangLet};
 
 type Name = &'static str;
 type Cont<T> = Box<dyn FnOnce(T) -> Reader<T>>;
@@ -64,12 +65,12 @@ impl VarEff {
 
 pub struct EvalEff;
 
-type Dom = lang_int::Dom;
+type Dom = eval_int::Dom;
 impl LangInt for EvalEff {
     type Repr = Reader<Dom>;
 
     fn int(n: i32) -> Self::Repr {
-        let ein = lang_int::EvalInt::int(n);
+        let ein = eval_int::EvalInt::int(n);
         VarEff::ans(ein)
     }
 

@@ -1,42 +1,37 @@
 use std::collections::HashMap;
 
-use crate::lang_int::{self, EvalInt};
+use crate::eval_int::{self, EvalInt};
+use crate::lang::{LangInt, Name, LangLet};
 
-type Name = &'static str;
-pub trait LangLet: lang_int::LangInt {
-    fn var(var_name: Name) -> Self::Repr;
-    fn let_(var: (Name, Self::Repr), body: Self::Repr) -> Self::Repr;
-}
-
-type Dom = lang_int::Dom;
+type Dom = eval_int::Dom;
 type Env = HashMap<Name, Dom>;
 
-pub struct EvalLet;
+pub struct EvalEnv;
 
-impl EvalLet {
-    fn ans(val: Dom) -> <EvalLet as lang_int::LangInt> :: Repr {
+impl EvalEnv {
+    fn ans(val: Dom) -> <EvalEnv as LangInt> :: Repr {
         Box::new(move |_env| val)
     }
 
     fn lift2(bin_op: fn(Dom, Dom) -> Dom, 
-            r1: <EvalLet as lang_int::LangInt> :: Repr,
-            r2: <EvalLet as lang_int::LangInt> :: Repr) -> <EvalLet as lang_int::LangInt> :: Repr {
+            r1: <EvalEnv as LangInt> :: Repr,
+            r2: <EvalEnv as LangInt> :: Repr) -> <EvalEnv as LangInt> :: Repr {
         Box::new(move |env| bin_op(r1(env), r2(env)))
     }
 
 }
 
-impl lang_int::LangInt for EvalLet {
+impl LangInt for EvalEnv {
     type Repr = Box<dyn Fn(&mut Env) -> Dom>;
 
 
     fn int(n: i32) -> Self::Repr {
-        let ein = lang_int::EvalInt::int(n);
-        EvalLet::ans(ein)
+        let ein = EvalInt::int(n);
+        EvalEnv::ans(ein)
     }
 
     fn add(r1: Self::Repr, r2: Self::Repr) -> Self::Repr {
-        EvalLet::lift2(EvalInt::add, r1, r2)
+        EvalEnv::lift2(EvalInt::add, r1, r2)
     }
 
     type Obs = ();
@@ -47,7 +42,7 @@ impl lang_int::LangInt for EvalLet {
     }
 }
 
-impl LangLet for EvalLet {
+impl LangLet for EvalEnv {
     fn var(var_name: Name) -> Self::Repr {
         Box::new(move |env| {
             env.get(&var_name).unwrap().clone()

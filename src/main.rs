@@ -1,10 +1,12 @@
-use crate::lang_int::{EvalInt, LangInt};
-use crate::lang_let::{EvalLet, LangLet};
-use crate::lang_eff::{VarEff, EvalEff};
+use crate::lang::{LangInt};
+use crate::eval_int::{EvalInt};
+use crate::eval_env::{EvalEnv};
+use crate::eval_eff::{VarEff, EvalEff};
 
-mod lang_int;
-mod lang_let;
-mod lang_eff;
+mod lang;
+mod eval_int;
+mod eval_env;
+mod eval_eff;
 
 fn main() {
     let a = EvalInt::int(1);

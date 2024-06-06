@@ -1,11 +1,4 @@
-pub trait LangInt {
-    type Repr;
-    fn int(n: i32) -> Self::Repr;
-    fn add(r1: Self::Repr, r2: Self::Repr) -> Self::Repr;
-
-    type Obs;
-    fn observe(r: Self::Repr) -> Self::Obs;
-}
+use crate::lang::LangInt;
 
 pub struct EvalInt;
 
