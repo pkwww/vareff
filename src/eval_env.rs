@@ -53,7 +53,7 @@ impl LangLet for EvalEnv {
         Box::new(move |env| {
             let var_eval_val = var.1(env);
             // TODO: how to handle var shadowing?
-            env.insert(var.0, var_eval_val).unwrap();
+            env.insert(var.0, var_eval_val);
             body(env)
         })
     }

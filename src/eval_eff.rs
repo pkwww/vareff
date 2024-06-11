@@ -10,7 +10,7 @@ pub enum Reader<T: Copy> {
     // Query(Name, Fn(T) -> Reader<T>),
 }
 
-pub struct VarEff;
+struct VarEff;
 
 impl VarEff {
     fn ans<T: Copy>(val: T) -> Reader<T> {

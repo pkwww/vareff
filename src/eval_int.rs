@@ -10,12 +10,12 @@ impl LangInt for EvalInt {
     }
     fn add(r1: Self::Repr, r2: Self::Repr) -> Self::Repr {
         let sum = r1 + r2;
-        format!("{}\n", sum);
+        // print!("{}\n", sum);
         sum
     }
 
     type Obs = ();
     fn observe(r: Self::Repr) -> Self::Obs {
-        format!("{}\n", r);
+        print!("{}\n", r);
     }
 }
